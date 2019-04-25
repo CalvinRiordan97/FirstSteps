@@ -8,17 +8,40 @@
     tools:context=".HomeActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/trackButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        app:srcCompat="@color/colorPrimary" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/trackButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:backgroundTint="@color/colorPrimaryDark"
+            app:srcCompat="@android:drawable/ic_media_play" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/gameButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:backgroundTint="@color/colorPrimaryDark"
+            app:srcCompat="@android:drawable/btn_star_big_on" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/shopButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            app:backgroundTint="@color/colorPrimaryDark"
+            app:srcCompat="@android:drawable/ic_menu_delete" />
+
+        <TextView
+            android:id="@+id/uID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
 
         <TextView
             android:id="@+id/steps"
@@ -27,47 +50,6 @@
             android:layout_marginTop="5dp"
             android:text="Steps"
             android:textSize="24sp" />
-
-        <Button
-            android:id="@+id/startbtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:onClick="startTrackingSteps"
-            android:text="Start" />
-
-        <Button
-            android:id="@+id/stopbtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:onClick="stopTrackingSteps"
-            android:layout_marginTop="5dp"
-            android:text="Stop" />
-
-        <Button
-            android:id="@+id/picMatchBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:onClick="pictureMatchGame"
-            android:text="Play Picture Match"
-            android:layout_marginTop="5dp"/>
-
-        <Button
-            android:id="@+id/shopBtn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@color/colorPrimary"
-            android:onClick="shop"
-            android:text="Shop" />
-
-        <TextView
-            android:id="@+id/uID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

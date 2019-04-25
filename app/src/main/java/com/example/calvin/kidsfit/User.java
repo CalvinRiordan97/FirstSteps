@@ -12,14 +12,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class User implements Parcelable {
 
     String id;
     String name;
     int age;
-    ArrayList<String> friends;
-    ArrayList<String> friendRequests;
+    HashMap<String, Boolean> friends;
+    HashMap<String, Boolean> friendRequests;
     String email;
     int stepsToday;
     int stepsTotal;
@@ -38,8 +39,8 @@ public class User implements Parcelable {
         this.name = name;
         this.age = age;
         this.email = email;
-        this.friends = new ArrayList<>();
-        this.friendRequests = new ArrayList<>();
+        this.friends = new HashMap<>();
+        this.friendRequests = new HashMap<>();
         this.stepsToday = 0;
         this.stepsTotal = 0;
         this.highScore = 0;
@@ -50,8 +51,8 @@ public class User implements Parcelable {
         name = in.readString();
         age = in.readInt();
         email = in.readString();
-        friends = in.readArrayList(null);
-        friendRequests = in.readArrayList(null);
+        friends = in.readHashMap(null);
+        friendRequests = in.readHashMap(null);
         stepsToday = in.readInt();
         stepsTotal = in.readInt();
         highScore = in.readInt();
@@ -113,31 +114,31 @@ public class User implements Parcelable {
         this.stepsTotal = stepsTotal;
     }
 
-    public ArrayList<String> getFriends() {
+    public HashMap<String, Boolean>  getFriends() {
         return this.friends;
     }
 
-    public void setFriends(ArrayList<String> friends) {
+    public void setFriends(HashMap<String, Boolean>  friends) {
         this.friends = friends;
     }
 
-    public void setFriendRequests(ArrayList<String> friendRequests) {
+    public void setFriendRequests(HashMap<String, Boolean> friendRequests) {
         this.friendRequests = friendRequests;
     }
 
     public void addFriend (String uid){
-        this.friends.add(uid);
+        this.friends.put(uid, true);
     }
 
     public void addFriendRequest (String uid){
-        this.friendRequests.add(uid);
+        this.friendRequests.put(uid, false);
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
-    public ArrayList<String> getFriendRequests() {
+    public HashMap<String, Boolean>  getFriendRequests() {
         return friendRequests;
     }
 
@@ -156,8 +157,8 @@ public class User implements Parcelable {
         parcel.writeString(this.name);
         parcel.writeInt(this.age);
         parcel.writeString(this.email);
-        parcel.writeList(this.friends);
-        parcel.writeList(this.friendRequests);
+        parcel.writeMap(this.friends);
+        parcel.writeMap(this.friendRequests);
         parcel.writeInt(this.stepsToday);
         parcel.writeInt(this.stepsTotal);
         parcel.writeInt(this.highScore);

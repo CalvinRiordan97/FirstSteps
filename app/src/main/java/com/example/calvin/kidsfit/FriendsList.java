@@ -23,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class FriendsList extends AppCompatActivity {
@@ -30,7 +31,7 @@ public class FriendsList extends AppCompatActivity {
     DatabaseReference myRef;
     ValueEventListener dbListener;
     User user;
-    ArrayList<String> users;
+    HashMap<String, Boolean> users;
     ArrayList<User> friends;
     ArrayAdapter<String> adapter;
     ListView list;
@@ -56,7 +57,7 @@ public class FriendsList extends AppCompatActivity {
 
         myRef = FirebaseDatabase.getInstance().getReference();
 
-        users = new ArrayList<>();
+        users = new HashMap<>();
         friends = new ArrayList<>();
 
 
@@ -81,11 +82,14 @@ public class FriendsList extends AppCompatActivity {
                     User fUser = ds.getValue(User.class);
 
                     if(user.getId().equals(fUser.getId())){
-                        users = fUser.getFriends();
+                        if(user.getFriends() != null)
+                            users = fUser.getFriends();
+                        else
+                            break;
 
                         for (DataSnapshot ds1 : dataSnapshot.getChildren()){
                             User fUser1 = ds1.getValue(User.class);
-                            if(users.contains(fUser1.getId()))
+                            if(users.containsKey(fUser1.getId()))
                                 friends.add(fUser1);
                         }
                     }

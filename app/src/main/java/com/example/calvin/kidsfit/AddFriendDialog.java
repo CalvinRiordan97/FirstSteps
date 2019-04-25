@@ -71,8 +71,8 @@ public class AddFriendDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        myRef.child("Users").child(friendToAdd).child("friends").push().setValue(firebaseUser.getUid());
-                        myRef.child("Users").child(firebaseUser.getUid()).child("friends").push().setValue(friendToAdd);
+                        myRef.child("Users").child(friendToAdd).child("friends").child(firebaseUser.getUid()).setValue(true);
+                        myRef.child("Users").child(firebaseUser.getUid()).child("friends").child(friendToAdd).setValue(true);
                     }
                 });
 

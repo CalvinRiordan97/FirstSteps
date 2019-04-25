@@ -46,8 +46,11 @@ public class FriendRequestList extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     User fUser = ds.getValue(User.class);
-                    if(user.getFriendRequests().contains(fUser.getId()))
-                        friends.add(fUser.getName());
+                    if(user.getFriendRequests() != null)
+                        if(user.getFriendRequests().containsKey(fUser.getId()))
+                            friends.add(fUser.getName());
+                    else
+                        break;
                 }
                 configAdapter(friends);
             }

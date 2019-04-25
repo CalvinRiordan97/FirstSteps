@@ -145,6 +145,33 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Get Floating Action Buttons
+        FloatingActionButton mTrack = findViewById(R.id.trackButton);
+        FloatingActionButton mGame = findViewById(R.id.gameButton);
+        FloatingActionButton mShop = findViewById(R.id.shopButton);
+
+        //TODO: stop tracking location when tracking footsteps stops
+        mTrack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startTrackingSteps(v);
+            }
+        });
+
+        mGame.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pictureMatchGame(v);
+            }
+        });
+
+        mShop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shop(v);
+            }
+        });
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
 
@@ -330,16 +357,26 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     //Start tracking footsteps
     public void startTrackingSteps(View view){
-
-        countSteps = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-
-        if(countSteps != null){
-            sensorManager.registerListener(this, countSteps, SensorManager.SENSOR_DELAY_UI);
-            Toast.makeText(getApplicationContext(), "Tracking Started", Toast.LENGTH_SHORT).show();
-        }
+        if(!trackingSteps)
+            trackingSteps = true;
         else
-            Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
-        trackingSteps = true;
+            trackingSteps = false;
+
+        if(trackingSteps){
+            countSteps = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
+            if(countSteps != null){
+                sensorManager.registerListener(this, countSteps, SensorManager.SENSOR_DELAY_UI);
+                Toast.makeText(getApplicationContext(), "Tracking Started", Toast.LENGTH_SHORT).show();
+                }
+            else
+                Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            sensorManager.unregisterListener(this);
+            trackingSteps = false;
+            Toast.makeText(getApplicationContext(), "Tracking Stopped", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
