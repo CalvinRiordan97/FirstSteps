@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "357530584166",
+    "firebase_url": "https://kidsfit-fyp.firebaseio.com",
+    "project_id": "kidsfit-fyp",
+    "storage_bucket": "kidsfit-fyp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357530584166:android:1ab6a3274aa3b326",
+        "android_client_info": {
+          "package_name": "com.example.calvin.kidsfit"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "357530584166-872ta3gevnnsp1lvn787o6asq9igacj5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.calvin.kidsfit",
+            "certificate_hash": "ab5c55539ece80e61ddb678a19a62b3ffd16ccc1"
+          }
+        },
+        {
+          "client_id": "357530584166-7c1lga72no1dkb80o9aac3vmql55rvb2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyACXf26mPaYEpPy71ED1EsnnkYCfWl0E6w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "357530584166-7c1lga72no1dkb80o9aac3vmql55rvb2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
