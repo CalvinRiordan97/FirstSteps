@@ -75,9 +75,11 @@ public class FriendsList extends AppCompatActivity {
 //            }
 //        });
 
-        myRef.child("Users").addListenerForSingleValueEvent(dbListener = new ValueEventListener() {
+        myRef.child("Users").addValueEventListener(dbListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                friends.clear();
+                user = dataSnapshot.child(user.getId()).getValue(User.class);
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     User fUser = ds.getValue(User.class);
 
@@ -126,4 +128,9 @@ public class FriendsList extends AppCompatActivity {
         frd.show(getSupportFragmentManager(), "Friend Request Dialog ");
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
 }

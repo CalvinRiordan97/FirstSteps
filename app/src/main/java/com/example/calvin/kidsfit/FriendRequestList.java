@@ -41,9 +41,11 @@ public class FriendRequestList extends AppCompatActivity {
         friends = new ArrayList<>();
 
 
-        myRef.child("Users").addListenerForSingleValueEvent(dbListener = new ValueEventListener() {
+        myRef.child("Users").addValueEventListener(dbListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                friends.clear();
+                user = dataSnapshot.child(user.getId()).getValue(User.class);
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                     User fUser = ds.getValue(User.class);
                     if(user.getFriendRequests() != null)

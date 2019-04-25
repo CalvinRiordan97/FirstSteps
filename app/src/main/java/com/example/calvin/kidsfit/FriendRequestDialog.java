@@ -71,7 +71,6 @@ public class FriendRequestDialog extends AppCompatDialogFragment {
                         String userEmail = editTextEmail.getText().toString();
                         for(User user : users){
                             if(user.getEmail().equalsIgnoreCase(userEmail)){
-                                user.addFriendRequest(firebaseUser.getUid());
                                 myRef.child("Users").child(user.getId()).child("friendRequests").child(firebaseUser.getUid()).setValue(false);
 //                                friends.add(user.getId());
 //                                myRef.child("Users").child(firebaseUser.getUid()).child("friends").setValue(friends);

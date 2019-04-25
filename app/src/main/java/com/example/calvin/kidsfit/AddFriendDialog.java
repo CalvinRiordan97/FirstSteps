@@ -46,9 +46,9 @@ public class AddFriendDialog extends AppCompatDialogFragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
-                    users.add(ds.getValue().toString());
+                    users.add(ds.getKey().toString());
                 }
-                friendToAdd = users.get(pos+1);
+                friendToAdd = users.get(pos);
             }
 
             @Override
@@ -73,6 +73,8 @@ public class AddFriendDialog extends AppCompatDialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         myRef.child("Users").child(friendToAdd).child("friends").child(firebaseUser.getUid()).setValue(true);
                         myRef.child("Users").child(firebaseUser.getUid()).child("friends").child(friendToAdd).setValue(true);
+                        //Remove the request
+                        myRef.child("Users").child(firebaseUser.getUid()).child("friendRequests").child(friendToAdd).removeValue();
                     }
                 });
 
