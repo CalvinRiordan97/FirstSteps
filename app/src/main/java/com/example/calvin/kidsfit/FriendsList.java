@@ -2,6 +2,7 @@ package com.example.calvin.kidsfit;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
@@ -31,8 +32,8 @@ public class FriendsList extends AppCompatActivity {
     DatabaseReference myRef;
     ValueEventListener dbListener;
     User user;
-    HashMap<String, Boolean> users;
-    ArrayList<User> friends;
+    ArrayList<User> users;
+    ArrayList<String> friends;
     ArrayAdapter<String> adapter;
     ListView list;
 
@@ -57,47 +58,18 @@ public class FriendsList extends AppCompatActivity {
 
         myRef = FirebaseDatabase.getInstance().getReference();
 
-        users = new HashMap<>();
+        users = new ArrayList<>();
         friends = new ArrayList<>();
 
-
-//        myRef.child("Users").child(user.getId()).child("friends").addValueEventListener(dbListener = new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                        users.add(ds.getValue().toString());
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
-        myRef.child("Users").addValueEventListener(dbListener = new ValueEventListener() {
+        myRef.child("Friends").child(user.getId()).addListenerForSingleValueEvent(dbListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 friends.clear();
-                user = dataSnapshot.child(user.getId()).getValue(User.class);
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    User fUser = ds.getValue(User.class);
-
-                    if(user.getId().equals(fUser.getId())){
-                        if(user.getFriends() != null)
-                            users = fUser.getFriends();
-                        else
-                            break;
-
-                        for (DataSnapshot ds1 : dataSnapshot.getChildren()){
-                            User fUser1 = ds1.getValue(User.class);
-                            if(users.containsKey(fUser1.getId()))
-                                friends.add(fUser1);
-                        }
-                    }
-
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    if((Boolean) ds.getValue())
+                        friends.add(ds.getKey());
                 }
-                configAdapter(friends);
+
             }
 
             @Override
@@ -105,6 +77,51 @@ public class FriendsList extends AppCompatActivity {
 
             }
         });
+
+        myRef.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren())
+                    if(friends.contains(ds.getValue(User.class).getId()))
+                        users.add(ds.getValue(User.class));
+                configAdapter(users);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+//        myRef.child("Users").addValueEventListener(dbListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                friends.clear();
+//                user = dataSnapshot.child(user.getId()).getValue(User.class);
+//                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+//                    User fUser = ds.getValue(User.class);
+//
+//                    if(user.getId().equals(fUser.getId())){
+//                        if(user.getFriends() != null)
+//                            users = fUser.getFriends();
+//                        else
+//                            break;
+//
+//                        for (DataSnapshot ds1 : dataSnapshot.getChildren()){
+//                            User fUser1 = ds1.getValue(User.class);
+//                            if(users.containsKey(fUser1.getId()))
+//                                friends.add(fUser1);
+//                        }
+//                    }
+//
+//                }
+//                configAdapter(friends);
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
     public void configAdapter(ArrayList<User> friends){

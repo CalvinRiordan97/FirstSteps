@@ -158,6 +158,10 @@ public class User implements Parcelable {
         return steps;
     }
 
+    public void setSteps(HashMap<String, Integer> steps) {
+        this.steps = steps;
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.id);

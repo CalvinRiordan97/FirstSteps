@@ -1,6 +1,7 @@
 package com.example.calvin.kidsfit;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class FriendRequestList extends AppCompatActivity {
     DatabaseReference myRef;
@@ -41,20 +43,14 @@ public class FriendRequestList extends AppCompatActivity {
         friends = new ArrayList<>();
 
 
-        myRef.child("Users").addValueEventListener(dbListener = new ValueEventListener() {
+        myRef.child("Friends").child(user.getId()).addValueEventListener(dbListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 friends.clear();
-                user = dataSnapshot.child(user.getId()).getValue(User.class);
-                for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                    User fUser = ds.getValue(User.class);
-                    if(user.getFriendRequests() != null)
-                        if(user.getFriendRequests().containsKey(fUser.getId()))
-                            friends.add(fUser.getName());
-                    else
-                        break;
+                for(DataSnapshot ds : dataSnapshot.getChildren()){
+                    if(!(Boolean) ds.getValue())
+                        friends.add(ds.getKey());
                 }
-                configAdapter(friends);
             }
 
             @Override
@@ -62,13 +58,35 @@ public class FriendRequestList extends AppCompatActivity {
 
             }
         });
+
+
+        myRef.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot ds : dataSnapshot.getChildren())
+                    if(friends.contains(ds.getValue(User.class).getId()))
+                        users.add(ds.getValue(User.class));
+                configAdapter();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
-    public void configAdapter(ArrayList<String> friends){
+    public void configAdapter(){
         list = findViewById(R.id.fList);
+
+        ArrayList<String> fUID = new ArrayList<>();
+
+        for(User u : users)
+            fUID.add(u.getName());
+
         adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1,
-                friends);
+                fUID);
         list.setAdapter(adapter);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -82,4 +100,6 @@ public class FriendRequestList extends AppCompatActivity {
         });
 
     }
+
+
 }

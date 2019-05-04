@@ -16,6 +16,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.HashMap;
+
 public class CreateAccount extends AppCompatActivity {
 
     EditText firstName;
@@ -72,8 +74,12 @@ public class CreateAccount extends AppCompatActivity {
                     mAuth.signInWithEmailAndPassword(newEmail, newPass);
                     firebaseUser = mAuth.getCurrentUser();
                     User newUser = new User(firebaseUser.getUid(), newFirstName+newSecondName, Integer.parseInt(newBirthDay), newEmail);
-                    newUser.addFriend("test");
-                    newUser.addFriendRequest("test");
+                    newUser.setSteps(new HashMap<String, Integer>());
+                    newUser.getSteps().put("stepsToday", 0);
+                    newUser.getSteps().put("stepsTotal", 0);
+                    newUser.getSteps().put("wallet", 0);
+//                    newUser.addFriend("test");
+//                    newUser.addFriendRequest("test");
                     myRef.child("Users").child(firebaseUser.getUid()).setValue(newUser);
                 }
 
