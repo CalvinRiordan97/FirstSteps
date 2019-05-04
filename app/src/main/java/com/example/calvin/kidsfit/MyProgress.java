@@ -46,8 +46,8 @@ public class MyProgress extends AppCompatActivity {
     public void displayProgress(User user){
         userName.setText(user.getName());
         age.setText(Integer.toString(user.getAge()));
-        todaysSteps.setText(Integer.toString(user.getStepsToday()) );
-        totalSteps.setText(Integer.toString(user.getStepsTotal()) );
+        todaysSteps.setText(Integer.toString(user.getSteps().get("stepsToday")) );
+        totalSteps.setText(Integer.toString(user.getSteps().get("stepsTotal")) );
     }
 
 }

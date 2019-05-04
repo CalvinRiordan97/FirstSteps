@@ -62,7 +62,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     SensorManager sensorManager;
     Sensor countSteps;
     TextView stepsText;
-    TextView uID;
     int stepsTaken = 0;
     User user;
     double latitude, longitude;
@@ -116,8 +115,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         //Get Sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         stepsText = findViewById(R.id.steps);
-        uID = findViewById(R.id.uID);
-        uID.setText("User ID: "+firebaseUser.getUid());
 
 
         //Saves the logged in user as a User object
@@ -127,8 +124,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
-                stepsText.setText("Hello "+user.getName()+", You have taken: "+String.valueOf(user.getStepsToday())+" steps today!");
-                //Toast.makeText(getApplicationContext(), "Welcome, "+user.getName(), Toast.LENGTH_SHORT).show();
+                stepsText.setText("Hello "+user.getName()+", You have taken: "+String.valueOf(user.getSteps().get("stepsToday"))+" Today");
             }
 
             @Override
@@ -395,9 +391,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(trackingSteps == true){
-            user.setStepsToday(user.getStepsToday()+1);
-            myRef.child("Users").child(user.getId()).child("stepsToday").setValue(user.getStepsToday());
-            stepsText.setText("Hello "+user.getName()+", You have taken: "+String.valueOf(user.getStepsToday())+" Today");
+            user.getSteps().put("stepsToday", user.getSteps().get("stepsToday")+1);
+            myRef.child("Users").child(user.getId()).child("steps").child("stepsToday").setValue(user.getSteps().get("stepsToday"));
+            stepsText.setText("Hello "+user.getName()+", You have taken: "+String.valueOf(user.getSteps().get("stepsToday"))+" Today");
         }
     }
 

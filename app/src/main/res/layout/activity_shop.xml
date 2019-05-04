@@ -43,5 +43,18 @@
             android:layout_height="wrap_content"
             android:text="Skip Level" />
 
+        <Button
+            android:id="@+id/undoMove"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Undo Move" />
+
+        <Button
+            android:id="@+id/convert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Convert Steps" />
+
     </LinearLayout>
+
 </android.support.constraint.ConstraintLayout>

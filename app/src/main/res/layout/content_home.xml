@@ -11,37 +11,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/trackButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="120dp"
+            android:layout_height="119dp"
+            android:layout_marginBottom="10dp"
             android:clickable="true"
             app:backgroundTint="@color/colorPrimaryDark"
-            app:srcCompat="@android:drawable/ic_media_play" />
+            app:srcCompat="@drawable/play" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/gameButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="127dp"
+            android:layout_height="120dp"
+            android:layout_marginBottom="10dp"
             android:clickable="true"
             app:backgroundTint="@color/colorPrimaryDark"
-            app:srcCompat="@android:drawable/btn_star_big_on" />
+            app:srcCompat="@android:drawable/btn_star_big_on"
+            />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/shopButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="119dp"
+            android:layout_height="122dp"
+            android:layout_marginBottom="10dp"
             android:clickable="true"
             app:backgroundTint="@color/colorPrimaryDark"
             app:srcCompat="@android:drawable/ic_menu_delete" />
-
-        <TextView
-            android:id="@+id/uID"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
 
         <TextView
             android:id="@+id/steps"

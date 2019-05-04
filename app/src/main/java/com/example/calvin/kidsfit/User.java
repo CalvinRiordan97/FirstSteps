@@ -25,6 +25,7 @@ public class User implements Parcelable {
     int stepsToday;
     int stepsTotal;
     int highScore;
+    HashMap<String, Integer> steps;
 
     DatabaseReference myRef = FirebaseDatabase.getInstance().getReference();
     User user;
@@ -44,6 +45,7 @@ public class User implements Parcelable {
         this.stepsToday = 0;
         this.stepsTotal = 0;
         this.highScore = 0;
+        this.steps = new HashMap<>();
     }
 
     protected User(Parcel in) {
@@ -56,6 +58,7 @@ public class User implements Parcelable {
         stepsToday = in.readInt();
         stepsTotal = in.readInt();
         highScore = in.readInt();
+        steps = in.readHashMap(null);
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -151,6 +154,10 @@ public class User implements Parcelable {
     }
 
 
+    public HashMap<String, Integer> getSteps() {
+        return steps;
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(this.id);
@@ -162,6 +169,7 @@ public class User implements Parcelable {
         parcel.writeInt(this.stepsToday);
         parcel.writeInt(this.stepsTotal);
         parcel.writeInt(this.highScore);
+        parcel.writeMap(this.steps);
     }
 
 

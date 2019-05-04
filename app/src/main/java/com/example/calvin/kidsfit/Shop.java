@@ -19,10 +19,14 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Shop extends AppCompatActivity {
 
+    User user;
+
     TextView wallet;
     Button extraLives;
     Button skipLevel;
-    int balance;
+    Button convertSteps;
+
+    int stepsToday, stepsTotal, balance;
 
     DatabaseReference myRef;
     ValueEventListener dbListener;
@@ -35,11 +39,14 @@ public class Shop extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
 
+        Intent intent = getIntent();
+        user = intent.getParcelableExtra("User");
         wallet = findViewById(R.id.walletBalance);
 
         //Get the shop items
         extraLives = findViewById(R.id.extraLives);
         skipLevel = findViewById(R.id.skipLevel);
+        convertSteps = findViewById(R.id.convert);
 
         //Initialize References
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -55,11 +62,14 @@ public class Shop extends AppCompatActivity {
         myRef = FirebaseDatabase.getInstance().getReference();
         firebaseUser = mAuth.getCurrentUser();
 
-        myRef.child("Users").child(firebaseUser.getUid()).child("wallet").addValueEventListener(dbListener = new ValueEventListener() {
+        myRef.child("Users").child(firebaseUser.getUid()).child("steps").addValueEventListener(dbListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                balance = Integer.parseInt(dataSnapshot.getValue().toString());
-                wallet.setText(dataSnapshot.getValue().toString());
+
+                balance = Integer.parseInt(dataSnapshot.child("wallet").getValue().toString());
+                stepsToday = Integer.parseInt(dataSnapshot.child("stepsToday").getValue().toString());
+                stepsTotal = Integer.parseInt(dataSnapshot.child("stepsTotal").getValue().toString());
+                wallet.setText(String.valueOf(balance));
             }
 
             @Override
@@ -107,6 +117,14 @@ public class Shop extends AppCompatActivity {
                 pud.setArguments(args);
                 pud.show(getSupportFragmentManager(), "Power Up Dialog");
                 //Toast.makeText(getApplicationContext(), "Skip Level", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        convertSteps.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                myRef.child("Users").child(firebaseUser.getUid()).child("steps").child("wallet").setValue(balance+stepsToday);
             }
         });
     }

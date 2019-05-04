@@ -54,21 +54,21 @@
                 android:id="@+id/button4"
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
-                android:text="Button" />
+                android:text="Skip Level" />
 
             <Button
                 android:id="@+id/button6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Extra Life" />
 
             <Button
                 android:id="@+id/button5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Button" />
+                android:text="Undo Move" />
         </LinearLayout>
 
     </LinearLayout>
