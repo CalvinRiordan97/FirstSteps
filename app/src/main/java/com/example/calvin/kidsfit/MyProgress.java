@@ -44,10 +44,10 @@ public class MyProgress extends AppCompatActivity {
     }
 
     public void displayProgress(User user){
-        userName.setText(user.getName());
-        age.setText(Integer.toString(user.getAge()));
-        todaysSteps.setText(Integer.toString(user.getSteps().get("stepsToday")) );
-        totalSteps.setText(Integer.toString(user.getSteps().get("stepsTotal")) );
+        userName.setText("Name: "+user.getName());
+        age.setText("Age: "+Integer.toString(user.getAge()));
+        todaysSteps.setText("Steps Today: "+Integer.toString(user.getSteps().get("stepsToday")) );
+        totalSteps.setText("Steps Total: "+Integer.toString(user.getSteps().get("stepsTotal")) );
     }
 
 }

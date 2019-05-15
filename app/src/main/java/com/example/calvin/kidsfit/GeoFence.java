@@ -58,10 +58,16 @@ public class GeoFence extends FragmentActivity implements GoogleApiClient.Connec
     double longitude;
     String name;
 
+    ArrayList<String> friends;
+    ArrayList<User> users;
+
+    String friend;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
         setContentView(R.layout.activity_geo_fence);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -85,6 +91,31 @@ public class GeoFence extends FragmentActivity implements GoogleApiClient.Connec
 
         firebaseUser = mAuth.getCurrentUser();
 
+        friends = intent.getStringArrayListExtra("friends");
+        friend = friends.get(0);
+        myRef.child("Users").child(friend).child("Location").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mMap.clear();
+                Double lat = Double.parseDouble(dataSnapshot.child("lat").getValue().toString());
+                Double lng = Double.parseDouble(dataSnapshot.child("lat").getValue().toString());
+                LatLng ll = new LatLng(lat,lng);
+                mMap.addMarker(new MarkerOptions().position(ll).title(friend));
+                mMap.addCircle(new CircleOptions()
+                        .center(new LatLng(lat,
+                                    lng))
+                        .radius(10)
+                        .strokeColor(Color.BLUE)
+                        .fillColor(0x220000FD));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -94,18 +125,7 @@ public class GeoFence extends FragmentActivity implements GoogleApiClient.Connec
         geofencingClient = LocationServices.getGeofencingClient(this);
         geofenceList = new ArrayList<>();
 
-        myRef.child("Users").child(firebaseUser.getUid()).child("name").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                name = dataSnapshot.getValue().toString();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
+        name = intent.getStringExtra("name");
         myRef.child("Users").child(firebaseUser.getUid()).child("Location").addValueEventListener(dbListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

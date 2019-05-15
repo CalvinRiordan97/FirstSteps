@@ -42,7 +42,7 @@ public class AddFriendDialog extends AppCompatDialogFragment {
         firebaseUser = mAuth.getCurrentUser();
         myRef = FirebaseDatabase.getInstance().getReference();
 
-        myRef.child("Users").child(firebaseUser.getUid()).child("friendRequests").addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child("Friends").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren()){
@@ -71,10 +71,8 @@ public class AddFriendDialog extends AppCompatDialogFragment {
                 .setPositiveButton("Send", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        myRef.child("Users").child(friendToAdd).child("friends").child(firebaseUser.getUid()).setValue(true);
-                        myRef.child("Users").child(firebaseUser.getUid()).child("friends").child(friendToAdd).setValue(true);
-                        //Remove the request
-                        myRef.child("Users").child(firebaseUser.getUid()).child("friendRequests").child(friendToAdd).removeValue();
+                        myRef.child("Friends").child(friendToAdd).child(firebaseUser.getUid()).setValue(true);
+                        myRef.child("Friends").child(firebaseUser.getUid()).child(friendToAdd).setValue(true);
                     }
                 });
 

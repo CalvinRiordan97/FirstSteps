@@ -1,5 +1,6 @@
 package com.example.calvin.kidsfit;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +27,7 @@ public class FriendRequestList extends AppCompatActivity {
     User user;
     ArrayList<User> users;
     ArrayList<String> friends;
+    ArrayList<String> fUID;
     ArrayAdapter<String> adapter;
     ListView list;
 
@@ -51,6 +53,7 @@ public class FriendRequestList extends AppCompatActivity {
                     if(!(Boolean) ds.getValue())
                         friends.add(ds.getKey());
                 }
+                configAdapter();
             }
 
             @Override
@@ -60,13 +63,36 @@ public class FriendRequestList extends AppCompatActivity {
         });
 
 
+
+    }
+
+    public void configAdapter(){
+        list = findViewById(R.id.fList);
+        fUID = new ArrayList<>();
+        final Context context = getApplicationContext();
         myRef.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for(DataSnapshot ds : dataSnapshot.getChildren())
                     if(friends.contains(ds.getValue(User.class).getId()))
-                        users.add(ds.getValue(User.class));
-                configAdapter();
+                        fUID.add(ds.getValue(User.class).getName());
+
+                adapter = new ArrayAdapter(context,
+                        android.R.layout.simple_list_item_1,
+                        fUID);
+
+                list.setAdapter(adapter);
+                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        AddFriendDialog afd = new AddFriendDialog();
+                        Bundle args = new Bundle();
+                        args.putInt("position", position);
+                        afd.setArguments(args);
+                        afd.show(getSupportFragmentManager(), "Add Friend Dialog");
+                    }
+                });
+
             }
 
             @Override
@@ -74,30 +100,11 @@ public class FriendRequestList extends AppCompatActivity {
 
             }
         });
-    }
 
-    public void configAdapter(){
-        list = findViewById(R.id.fList);
 
-        ArrayList<String> fUID = new ArrayList<>();
 
-        for(User u : users)
-            fUID.add(u.getName());
 
-        adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1,
-                fUID);
-        list.setAdapter(adapter);
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AddFriendDialog afd = new AddFriendDialog();
-                Bundle args = new Bundle();
-                args.putInt("position", position);
-                afd.setArguments(args);
-                afd.show(getSupportFragmentManager(), "Add Friend Dialog");
-            }
-        });
+
 
     }
 

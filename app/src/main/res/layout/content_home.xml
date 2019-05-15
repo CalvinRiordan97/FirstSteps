@@ -10,43 +10,46 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical">
 
-        <android.support.design.widget.FloatingActionButton
+        <TextView
+            android:id="@+id/greeting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="TextView"
+            android:textSize="24sp" />
+
+        <ImageButton
             android:id="@+id/trackButton"
-            android:layout_width="120dp"
-            android:layout_height="119dp"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            app:backgroundTint="@color/colorPrimaryDark"
-            app:srcCompat="@drawable/play" />
+            android:layout_width="168dp"
+            android:layout_height="match_parent"
+            android:onClick="startTrackingSteps"
+            app:srcCompat="@drawable/icons8_circled_play_100"
+            tools:srcCompat="@drawable/icons8_circled_play_100" />
 
-        <android.support.design.widget.FloatingActionButton
+        <ImageButton
             android:id="@+id/gameButton"
-            android:layout_width="127dp"
-            android:layout_height="120dp"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            app:backgroundTint="@color/colorPrimaryDark"
-            app:srcCompat="@android:drawable/btn_star_big_on"
-            />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="pictureMatchGame"
+            app:srcCompat="@drawable/game" />
 
-        <android.support.design.widget.FloatingActionButton
+        <ImageButton
             android:id="@+id/shopButton"
-            android:layout_width="119dp"
-            android:layout_height="122dp"
-            android:layout_marginBottom="10dp"
-            android:clickable="true"
-            app:backgroundTint="@color/colorPrimaryDark"
-            app:srcCompat="@android:drawable/ic_menu_delete" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="shop"
+            app:srcCompat="@drawable/shop" />
 
         <TextView
             android:id="@+id/steps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:gravity="center"
             android:text="Steps"
             android:textSize="24sp" />
 

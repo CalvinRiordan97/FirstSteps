@@ -18,25 +18,33 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="steps"
+            android:textSize="24sp"
+            app:fontFamily="sans-serif-medium"
             tools:layout_editor_absoluteX="1dp" />
 
         <TextView
             android:id="@+id/age"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="age" />
+            android:text="age"
+            android:textSize="24sp"
+            app:fontFamily="sans-serif-medium" />
 
         <TextView
             android:id="@+id/stepstoday"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Today" />
+            android:text="Today"
+            android:textSize="24sp"
+            app:fontFamily="sans-serif-medium" />
 
         <TextView
             android:id="@+id/stepstotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total" />
+            android:text="Total"
+            android:textSize="24sp"
+            app:fontFamily="sans-serif-medium" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -28,6 +28,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,10 +62,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     boolean trackingSteps = false;
     SensorManager sensorManager;
     Sensor countSteps;
+    TextView greet;
     TextView stepsText;
     int stepsTaken = 0;
     User user;
     double latitude, longitude;
+    ArrayList<String> friends;
+    Intent intent;
 
     DatabaseReference myRef;
     ValueEventListener dbListener;
@@ -78,6 +82,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private LocationManager mLocationManager;
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
+    ImageButton trackBtn;
+    ImageButton gameBtn;
+    ImageButton shopBtn;
 
     @Override
     protected void onStart() {
@@ -114,6 +121,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         //Get Sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        greet = findViewById(R.id.greeting);
         stepsText = findViewById(R.id.steps);
 
 
@@ -124,7 +132,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 user = dataSnapshot.getValue(User.class);
-                stepsText.setText("Hello "+user.getName()+", You have taken: "+String.valueOf(user.getSteps().get("stepsToday"))+" Today");
+                greet.setText("Hello "+user.getName());
+                stepsText.setText("You have taken: "+String.valueOf(user.getSteps().get("stepsToday"))+" Today");
             }
 
             @Override
@@ -142,31 +151,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
 
         //Get Floating Action Buttons
-        FloatingActionButton mTrack = findViewById(R.id.trackButton);
-        FloatingActionButton mGame = findViewById(R.id.gameButton);
-        FloatingActionButton mShop = findViewById(R.id.shopButton);
+        trackBtn = findViewById(R.id.trackButton);
+        trackBtn.setBackgroundDrawable(null);
 
-        //TODO: stop tracking location when tracking footsteps stops
-        mTrack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startTrackingSteps(v);
-            }
-        });
+        gameBtn = findViewById(R.id.gameButton);
+        gameBtn.setBackgroundDrawable(null);
 
-        mGame.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pictureMatchGame(v);
-            }
-        });
-
-        mShop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shop(v);
-            }
-        });
+        shopBtn = findViewById(R.id.shopButton);
+        shopBtn.setBackgroundDrawable(null);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -335,8 +327,26 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent);
 
         } else if (id == R.id.nav_fence) {
-            Intent intent = new Intent(this, GeoFence.class);
-            startActivity(intent);
+            intent = new Intent(this, GeoFence.class);
+            friends = new ArrayList<>();
+            myRef.child("Friends").child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for(DataSnapshot ds : dataSnapshot.getChildren()){
+                        if((Boolean) ds.getValue())
+                            friends.add(ds.getKey());
+                    }
+                    intent.putExtra("friends", friends);
+                    intent.putExtra("name", user.getName());
+                    startActivity(intent);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
 
         } else if (id == R.id.nav_signout) {
             fusedLocationClient.removeLocationUpdates(mLocationCallback);
@@ -351,6 +361,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    //TODO: stop tracking location when tracking footsteps stops
     //Start tracking footsteps
     public void startTrackingSteps(View view){
         if(!trackingSteps)
@@ -359,6 +370,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             trackingSteps = false;
 
         if(trackingSteps){
+            trackBtn.setImageResource(R.drawable.pause);
             countSteps = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
 
             if(countSteps != null){
@@ -369,6 +381,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_SHORT).show();
         }
         else{
+            trackBtn.setImageResource(R.drawable.icons8_circled_play_100);
             sensorManager.unregisterListener(this);
             trackingSteps = false;
             Toast.makeText(getApplicationContext(), "Tracking Stopped", Toast.LENGTH_SHORT).show();
@@ -376,12 +389,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    //Stop tracking footsteps
-    public void stopTrackingSteps(View view){
-        sensorManager.unregisterListener(this);
-        trackingSteps = false;
-        Toast.makeText(getApplicationContext(), "Tracking Stopped", Toast.LENGTH_SHORT).show();
-    }
+//    //Stop tracking footsteps
+//    public void stopTrackingSteps(View view){
+//        sensorManager.unregisterListener(this);
+//        trackingSteps = false;
+//        Toast.makeText(getApplicationContext(), "Tracking Stopped", Toast.LENGTH_SHORT).show();
+//    }
 
     public void shop(View view){
         Intent intent = new Intent(this, Shop.class);
@@ -393,7 +406,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if(trackingSteps == true){
             user.getSteps().put("stepsToday", user.getSteps().get("stepsToday")+1);
             myRef.child("Users").child(user.getId()).child("steps").child("stepsToday").setValue(user.getSteps().get("stepsToday"));
-            stepsText.setText("Hello "+user.getName()+", You have taken: "+String.valueOf(user.getSteps().get("stepsToday"))+" Today");
+            stepsText.setText("You have taken: "+String.valueOf(user.getSteps().get("stepsToday"))+" Today");
         }
     }
 
