@@ -1,5 +1,7 @@
 package com.example.calvin.kidsfit;
 
+import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,7 +11,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 public class PictureMatch extends AppCompatActivity {
+
+    DatabaseReference myRef;
+    ValueEventListener dbListener;
+    FirebaseAuth mAuth;
+    FirebaseAuth.AuthStateListener mAuthListener;
+    FirebaseUser firebaseUser;
+
     ImageView imgView = null;
     int countPair = 0;
     int maxPairs;
@@ -36,6 +53,21 @@ public class PictureMatch extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture_match);
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                if (firebaseAuth.getCurrentUser() == null) {
+                    startActivity(new Intent(PictureMatch.this, MainActivity.class));
+                }
+            }
+        };
+
+        //Initialize References
+        mAuth = FirebaseAuth.getInstance();
+        mAuth.addAuthStateListener(mAuthListener);
+        myRef = FirebaseDatabase.getInstance().getReference();
+        firebaseUser = mAuth.getCurrentUser();
 
         levelDisplay = findViewById(R.id.levelText);
 
@@ -117,5 +149,44 @@ public class PictureMatch extends AppCompatActivity {
         ImageAdapter imageAdapter = new ImageAdapter(this);
         gridView.setAdapter(imageAdapter);
         countPair = 0;
+    }
+
+    public void skipLevel(View view){
+        myRef.child("Users").child(firebaseUser.getUid()).child("powers").child("skip").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = Integer.parseInt(dataSnapshot.getValue().toString());
+                if(count > 0){
+                    myRef.child("Users").child(firebaseUser.getUid()).child("powers").child("skip").setValue(count-1);
+                    setUpGame();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void extraLife(View view){
+        myRef.child("Users").child(firebaseUser.getUid()).child("powers").child("extraLives").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = Integer.parseInt(dataSnapshot.getValue().toString());
+                if(count > 0){
+                    myRef.child("Users").child(firebaseUser.getUid()).child("powers").child("extraLives").setValue(count-1);
+                    lives++;
+                    livesDisplay.setText("Lives: "+String.valueOf(lives));
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

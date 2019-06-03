@@ -40,6 +40,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GeoFence extends FragmentActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener, OnMapReadyCallback {
 
@@ -53,13 +54,14 @@ public class GeoFence extends FragmentActivity implements GoogleApiClient.Connec
     private GeofencingClient geofencingClient;
     private GoogleApiClient mGoogleApiClient;
     private FusedLocationProviderClient fusedLocationClient;
-    ArrayList<Geofence> geofenceList;
+    LatLng userLL;
     double latitude;
     double longitude;
     String name;
 
     ArrayList<String> friends;
     ArrayList<User> users;
+    HashMap<String, LatLng> friendsLocations;
 
     String friend;
 
@@ -91,30 +93,29 @@ public class GeoFence extends FragmentActivity implements GoogleApiClient.Connec
 
         firebaseUser = mAuth.getCurrentUser();
 
+        //Initialize hash map
+        friendsLocations = new HashMap<>();
+
+        //Get list of the users friends
         friends = intent.getStringArrayListExtra("friends");
-        friend = friends.get(0);
-        myRef.child("Users").child(friend).child("Location").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                mMap.clear();
-                Double lat = Double.parseDouble(dataSnapshot.child("lat").getValue().toString());
-                Double lng = Double.parseDouble(dataSnapshot.child("lat").getValue().toString());
-                LatLng ll = new LatLng(lat,lng);
-                mMap.addMarker(new MarkerOptions().position(ll).title(friend));
-                mMap.addCircle(new CircleOptions()
-                        .center(new LatLng(lat,
-                                    lng))
-                        .radius(10)
-                        .strokeColor(Color.BLUE)
-                        .fillColor(0x220000FD));
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+        for(String f : friends){
+            friend = f;
+            myRef.child("Users").child(f).child("Location").addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    latitude = Double.parseDouble(dataSnapshot.child("lat").getValue().toString());
+                    longitude = Double.parseDouble(dataSnapshot.child("lng").getValue().toString());
+                    LatLng ll = new LatLng(latitude,longitude);
+                    updateMap(ll, friend);
+                }
 
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                }
+            });
+        }
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -122,31 +123,27 @@ public class GeoFence extends FragmentActivity implements GoogleApiClient.Connec
                 .addApi(LocationServices.API)
                 .build();
 
-        geofencingClient = LocationServices.getGeofencingClient(this);
-        geofenceList = new ArrayList<>();
-
         name = intent.getStringExtra("name");
         myRef.child("Users").child(firebaseUser.getUid()).child("Location").addValueEventListener(dbListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String latitudeS = dataSnapshot.child("lat").getValue().toString();
-                String longitudeS = dataSnapshot.child("lng").getValue().toString();
-                latitude = Double.parseDouble(latitudeS);
-                longitude = Double.parseDouble(longitudeS);
+                latitude = Double.parseDouble(dataSnapshot.child("lat").getValue().toString());
+                longitude = Double.parseDouble(dataSnapshot.child("lng").getValue().toString());
+                LatLng ll = new LatLng(latitude,longitude);
+                userLL = ll;
+                updateMap(ll, firebaseUser.getUid());
 
-                LatLng home = new LatLng(latitude,
-                        longitude);
-                mMap.clear();
-                mMap.addMarker(new MarkerOptions().position(home).title(name));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(home));
-                mMap.setMaxZoomPreference(18);
-                mMap.setMinZoomPreference(18);
-                mMap.addCircle(new CircleOptions()
-                        .center(new LatLng(latitude,
-                                longitude))
-                        .radius(10)
-                        .strokeColor(Color.BLUE)
-                        .fillColor(0x220000FF));
+//                String latitudeS = dataSnapshot.child("lat").getValue().toString();
+//                String longitudeS = dataSnapshot.child("lng").getValue().toString();
+//                latitude = Double.parseDouble(latitudeS);
+//                longitude = Double.parseDouble(longitudeS);
+//
+//                LatLng home = new LatLng(latitude,
+//                        longitude);
+//                mMap.clear();
+//                mMap.addMarker(new MarkerOptions().position(home).title(name));
+//                mMap.moveCamera(CameraUpdateFactory.newLatLng(home));
+
             }
 
             @Override
@@ -154,20 +151,6 @@ public class GeoFence extends FragmentActivity implements GoogleApiClient.Connec
 
             }
         });
-
-        geofenceList.add(new Geofence.Builder()
-                // Set the request ID of the geofence. This is a string to identify this
-                // geofence.
-                .setRequestId("Testing")
-                .setCircularRegion(
-                        latitude,
-                        longitude,
-                        20
-                )
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER |
-                        Geofence.GEOFENCE_TRANSITION_EXIT)
-                .setExpirationDuration(0)
-                .build());
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -179,28 +162,8 @@ public class GeoFence extends FragmentActivity implements GoogleApiClient.Connec
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        geofencingClient.addGeofences(getGeofencingRequest(), getGeofencePendingIntent())
-                .addOnSuccessListener(this, new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Geofences added
-                        // ...
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Failed to add geofences
-                        // ...
-                    }
-                });
 
     }
-
-    private PendingIntent getGeofencePendingIntent() {
-        return null;
-    }
-
 
     /**
      * Manipulates the map once available.
@@ -214,18 +177,13 @@ public class GeoFence extends FragmentActivity implements GoogleApiClient.Connec
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        mMap.setMaxZoomPreference(18);
+        mMap.setMinZoomPreference(18);
 //        LatLng home = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
 //        mMap.addMarker(new MarkerOptions().position(home).title("Ayyyyyy"));
 //        mMap.moveCamera(CameraUpdateFactory.newLatLng(home));
     }
 
-    private GeofencingRequest getGeofencingRequest() {
-        GeofencingRequest.Builder builder = new GeofencingRequest.Builder();
-        builder.setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER);
-        builder.addGeofences(geofenceList);
-        return builder.build();
-    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -248,11 +206,15 @@ public class GeoFence extends FragmentActivity implements GoogleApiClient.Connec
                 longitude);
         mMap.addMarker(new MarkerOptions().position(home).title("Ayyyyyy"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(home));
-        mMap.addCircle(new CircleOptions()
-                .center(new LatLng(latitude,
-                        -longitude))
-                .radius(10000)
-                .strokeColor(Color.BLUE)
-                .fillColor(0x220000FF));
+    }
+
+    public void updateMap(LatLng ll, String f){
+        friendsLocations.put(f, ll);
+        mMap.clear();
+        for(String key : friendsLocations.keySet()){
+            mMap.addMarker(new MarkerOptions().position(friendsLocations.get(key)).title(key));
+            if(userLL != null)
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(userLL));
+        }
     }
 }

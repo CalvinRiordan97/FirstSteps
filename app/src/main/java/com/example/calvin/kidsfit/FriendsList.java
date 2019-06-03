@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class FriendsList extends AppCompatActivity {
     ArrayList<String> friends;
     ArrayAdapter<String> adapter;
     ListView list;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +126,8 @@ public class FriendsList extends AppCompatActivity {
 //        });
     }
 
-    public void configAdapter(ArrayList<User> friends){
+    public void configAdapter(final ArrayList<User> friends){
+        intent = new Intent(this, MyProgress.class);
         list = findViewById(R.id.fList);
         ArrayList<String> fUID = new ArrayList<>();
 
@@ -136,6 +139,13 @@ public class FriendsList extends AppCompatActivity {
                 fUID);
 
         list.setAdapter(adapter);
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                intent.putExtra("User", friends.get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     private void openDialog() {

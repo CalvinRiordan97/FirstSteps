@@ -64,6 +64,8 @@ public class PowerUpDialog  extends AppCompatDialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         int newBal = balance - Integer.parseInt(cost);
                         myRef.child("Users").child(firebaseUser.getUid()).child("steps").child("wallet").setValue(newBal);
+                        myRef.child("Users").child(firebaseUser.getUid()).child("powers").child(getArguments().getString("path"))
+                                .setValue(getArguments().getInt("powerCount")+1);
                     }
                 });
 

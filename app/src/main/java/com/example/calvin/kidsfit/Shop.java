@@ -27,6 +27,7 @@ public class Shop extends AppCompatActivity {
     Button convertSteps;
 
     int stepsToday, stepsTotal, balance;
+    int skips, extraL;
 
     DatabaseReference myRef;
     ValueEventListener dbListener;
@@ -78,10 +79,11 @@ public class Shop extends AppCompatActivity {
             }
         });
 
-        myRef.child("Users").child(firebaseUser.getUid()).child("powerups").addValueEventListener(dbListener = new ValueEventListener() {
+        myRef.child("Users").child(firebaseUser.getUid()).child("powers").addValueEventListener(dbListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-;
+;               skips = Integer.parseInt(dataSnapshot.child("skip").getValue().toString());
+                extraL = Integer.parseInt(dataSnapshot.child("extraLives").getValue().toString());
             }
 
             @Override
@@ -96,9 +98,11 @@ public class Shop extends AppCompatActivity {
                 PowerUpDialog pud = new PowerUpDialog();
                 Bundle args = new Bundle();
                 args.putString("name", "Extra Lives");
+                args.putString("path", "extraLives");
                 args.putString("desc", "Increases the amount of lives you have by 2.");
                 args.putString("cost", "150");
                 args.putInt("wallet", balance);
+                args.putInt("powerCount", extraL);
                 pud.setArguments(args);
                 pud.show(getSupportFragmentManager(), "Power Up Dialog");
                 //myRef.child("Users").child(firebaseUser.getUid()).child("wallet").setValue(balance-20);
@@ -111,9 +115,11 @@ public class Shop extends AppCompatActivity {
                 PowerUpDialog pud = new PowerUpDialog();
                 Bundle args = new Bundle();
                 args.putString("name", "Skip Level");
+                args.putString("path", "skip");
                 args.putString("desc", "Skip the level you are on and go to the next one.");
                 args.putString("cost", "100");
                 args.putInt("wallet", balance);
+                args.putInt("powerCount", skips);
                 pud.setArguments(args);
                 pud.show(getSupportFragmentManager(), "Power Up Dialog");
                 //Toast.makeText(getApplicationContext(), "Skip Level", Toast.LENGTH_SHORT).show();

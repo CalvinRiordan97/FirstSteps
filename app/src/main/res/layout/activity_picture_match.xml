@@ -20,21 +20,28 @@
                 android:id="@+id/playerScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TextView" />
+                android:paddingRight="60dp"
+                android:text="TextView"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/levelText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingRight="60dp"
                 android:text="TextView"
-                android:textColorLink="@color/colorPrimary" />
+                android:textColorLink="@color/colorPrimary"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/livesText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="right"
                 android:layout_weight="1"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <GridView
@@ -52,8 +59,9 @@
 
             <Button
                 android:id="@+id/button4"
-                android:layout_width="140dp"
+                android:layout_width="206dp"
                 android:layout_height="wrap_content"
+                android:onClick="skipLevel"
                 android:text="Skip Level" />
 
             <Button
@@ -61,14 +69,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:onClick="extraLife"
                 android:text="Extra Life" />
 
-            <Button
-                android:id="@+id/button5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Undo Move" />
         </LinearLayout>
 
     </LinearLayout>

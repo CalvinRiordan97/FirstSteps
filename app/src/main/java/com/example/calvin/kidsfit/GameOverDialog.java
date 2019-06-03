@@ -40,7 +40,7 @@ public class GameOverDialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.game_over_dialog, null);
 
         scoreText = view.findViewById(R.id.finalScore);
-        scoreText.setText(score);
+        scoreText.setText("Score: "+score);
 
         builder.setView(view)
                 .setTitle("Game Over")
